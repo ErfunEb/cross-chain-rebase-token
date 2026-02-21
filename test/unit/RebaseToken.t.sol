@@ -22,7 +22,7 @@ contract RebaseTokenTest is Test {
         vm.startPrank(owner);
         rebaseToken = new RebaseToken();
         vault = new Vault(IRebaseToken(address(rebaseToken)));
-        rebaseToken.grandMintAndBurnRole(address(vault));
+        rebaseToken.grantMintAndBurnRole(address(vault));
         (bool success, ) = payable(address(vault)).call{value: 1 ether}("");
         vm.stopPrank();
     }
