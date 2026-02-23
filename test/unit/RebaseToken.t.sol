@@ -19,6 +19,7 @@ contract RebaseTokenTest is Test {
     address public user = makeAddr("user");
 
     function setUp() public {
+        vm.deal(owner, 1 ether);
         vm.startPrank(owner);
         rebaseToken = new RebaseToken();
         vault = new Vault(IRebaseToken(address(rebaseToken)));
@@ -133,17 +134,19 @@ contract RebaseTokenTest is Test {
     }
 
     function testCannotCallMintAndBurn() public {
-        vm.prank(user);
+        uint256 interestRate = rebaseToken.getInterestRate();
+
+        vm.startPrank(user);
         vm.expectPartialRevert(
             IAccessControl.AccessControlUnauthorizedAccount.selector
         );
-        rebaseToken.mint(user, 1000);
+        rebaseToken.mint(user, 1000, interestRate);
 
-        vm.prank(user);
         vm.expectPartialRevert(
             IAccessControl.AccessControlUnauthorizedAccount.selector
         );
         rebaseToken.burn(user, 1000);
+        vm.stopPrank();
     }
 
     function testGetPrincinpleAmount(uint256 amount) public {
